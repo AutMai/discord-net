@@ -15,7 +15,7 @@ public class Program {
     private readonly DiscordSocketClient _client = new();
 
     private static readonly MongoClient DbClient =
-        new(Environment.GetEnvironmentVariable("DCBOT_CONNECTION_STRING", EnvironmentVariableTarget.User));
+        new(Environment.GetEnvironmentVariable("DCBOT_CONNECTION_STRING"));
 
     private readonly IMongoCollection<BsonDocument> _collection =
         DbClient.GetDatabase("quotebot").GetCollection<BsonDocument>("quotes");
@@ -31,7 +31,7 @@ public class Program {
         _client.ModalSubmitted += ModalHandler;
         _client.SlashCommandExecuted += SlashCommandHandler;
 
-        var token = Environment.GetEnvironmentVariable("DCBOT_TOKEN", EnvironmentVariableTarget.User);
+        var token = Environment.GetEnvironmentVariable("DCBOT_TOKEN");
 
         await _client.LoginAsync(TokenType.Bot, token);
         await _client.StartAsync();
