@@ -133,7 +133,7 @@ public class Program {
                     {"author", command.User.Username}
                 });
 
-                await command.RespondAsync(embed: addedQuote.ToQuoteEmbed().Build());
+                await command.RespondAsync(embed: addedQuote.ToQuoteEmbed(Color.Green).Build());
                 break;
 
             case "list":
@@ -141,19 +141,19 @@ public class Program {
                 var buttons = new ComponentBuilder()
                     .WithButton("Previous", "previous")
                     .WithButton("Next", "next");
-                await command.RespondAsync(embed: quotes.ToQuoteEmbed(1).Build(), components: buttons.Build());
+                await command.RespondAsync(embed: quotes.ToQuoteEmbed(1, Color.Orange).Build(), components: buttons.Build());
                 break;
 
             case "delete":
                 var id = command.Data.Options.First().Options.First().Value.ToString();
                 var deletedQuote = await _collection.FindOneAndDeleteAsync(d => d["_id"] == new ObjectId(id));
-                await command.RespondAsync(embed: deletedQuote.ToQuoteEmbed().Build());
+                await command.RespondAsync(embed: deletedQuote.ToQuoteEmbed(Color.Red).Build());
                 break;
 
             case "random":
                 var guildQuotes = await GetGuildQuotesListAsync(command.GuildId());
                 var randomQuote = guildQuotes.GetRandomElement();
-                await command.RespondAsync(embed: randomQuote.ToQuoteEmbed().Build());
+                await command.RespondAsync(embed: randomQuote.ToQuoteEmbed(Color.Magenta).Build());
                 break;
 
             case "search":
@@ -168,7 +168,7 @@ public class Program {
                         d["author"].ToString().ToLower().Contains(searchTerm.ToLower())
                     ).ToList();
                 if (searchedQuotes.Count == 1)
-                    await command.RespondAsync(embed: searchedQuotes.FirstOrDefault()!.ToQuoteEmbed().Build());
+                    await command.RespondAsync(embed: searchedQuotes.FirstOrDefault()!.ToQuoteEmbed(Color.Blue).Build());
                 else
                     await command.RespondAsync(embed: searchedQuotes.ToMultipleQuotesEmbed().Build());
                 break;
@@ -182,12 +182,12 @@ public class Program {
             case "previous":
                 if (quoteNr == 1) quoteNr = quotes.Count + 1;
                 await arg.UpdateAsync(properties =>
-                    properties.Embed = quotes.ToQuoteEmbed(Convert.ToInt32(quoteNr) - 1).Build());
+                    properties.Embed = quotes.ToQuoteEmbed(Convert.ToInt32(quoteNr) - 1, Color.Orange).Build());
                 break;
             case "next":
                 if (quoteNr == quotes.Count) quoteNr = 0;
                 await arg.UpdateAsync(properties =>
-                    properties.Embed = quotes.ToQuoteEmbed(Convert.ToInt32(quoteNr) + 1).Build());
+                    properties.Embed = quotes.ToQuoteEmbed(Convert.ToInt32(quoteNr) + 1, Color.Orange).Build());
                 break;
         }
     }

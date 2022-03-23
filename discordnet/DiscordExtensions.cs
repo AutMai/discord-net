@@ -15,10 +15,10 @@ public static class DiscordExtensions {
         return $"{dateTime.Day}.{dateTime.Month}.{dateTime.Year} - {dateTime.Hour}:{dateTime.Minute}";
     }
 
-    public static EmbedBuilder ToQuoteEmbed(this List<BsonDocument> quotes, int index) {
+    public static EmbedBuilder ToQuoteEmbed(this List<BsonDocument> quotes, int index, Color color = default) {
         var quote = quotes[index - 1];
         var e = new EmbedBuilder {
-            Color = Color.Green,
+            Color = color,
             Title = quote["quote"].ToString(),
             Description =
                 $"~ {quote["situation"]}{Environment.NewLine}{Environment.NewLine}Added by {quote["author"]}{Environment.NewLine}Created at {quote["createdAt"].FormatDate()}{Environment.NewLine}Id: {quote["_id"]}",
@@ -29,9 +29,9 @@ public static class DiscordExtensions {
         return e;
     }
 
-    public static EmbedBuilder ToQuoteEmbed(this BsonDocument quote) {
+    public static EmbedBuilder ToQuoteEmbed(this BsonDocument quote, Color color = default) {
         var e = new EmbedBuilder {
-            Color = Color.Green,
+            Color = color,
             Title = quote["quote"].ToString(),
             Description =
                 $"- {quote["situation"]}{Environment.NewLine}{Environment.NewLine}Added by {quote["author"]}{Environment.NewLine}Created at {quote["createdAt"].FormatDate()}",
@@ -42,9 +42,9 @@ public static class DiscordExtensions {
         return e;
     }
 
-    public static EmbedBuilder ToMultipleQuotesEmbed(this IEnumerable<BsonDocument> quotes) {
+    public static EmbedBuilder ToMultipleQuotesEmbed(this IEnumerable<BsonDocument> quotes, Color color = default) {
         var e = new EmbedBuilder {
-            Color = Color.Green,
+            Color = color,
             Title = "Search Results"
         };
         foreach (var quote in quotes) {
@@ -56,5 +56,4 @@ public static class DiscordExtensions {
     }
 
     public static T GetRandomElement<T>(this List<T> list) => list[new Random().Next(list.Count)];
-    
 }
