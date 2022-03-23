@@ -15,7 +15,7 @@ public class Program {
     private readonly DiscordSocketClient _client = new();
 
     private static readonly MongoClient DbClient =
-        new(File.ReadAllText("../../../connectionString.txt"));
+        new(Environment.GetEnvironmentVariable("DCBOT_CONNECTION_STRING", EnvironmentVariableTarget.User));
 
     private readonly IMongoCollection<BsonDocument> _collection =
         DbClient.GetDatabase("quotebot").GetCollection<BsonDocument>("quotes");
@@ -31,7 +31,7 @@ public class Program {
         _client.ModalSubmitted += ModalHandler;
         _client.SlashCommandExecuted += SlashCommandHandler;
 
-        var token = await File.ReadAllTextAsync("../../../token.txt");
+        var token = Environment.GetEnvironmentVariable("DCBOT_TOKEN", EnvironmentVariableTarget.User);
 
         await _client.LoginAsync(TokenType.Bot, token);
         await _client.StartAsync();
@@ -153,7 +153,7 @@ public class Program {
             case "random":
                 var guildQuotes = await GetGuildQuotesListAsync(command.GuildId());
                 var randomQuote = guildQuotes.GetRandomElement();
-                await command.RespondAsync(embed: randomQuote.ToQuoteEmbed(Color.Magenta).Build());
+                await command.RespondAsync(embed: randomQuote.ToQuoteEmbed(Color.Purple).Build());
                 break;
 
             case "search":
